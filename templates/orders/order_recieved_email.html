@@ -1,9 +1,10 @@
 {% autoescape off %}
+{% load i18n %}
 
-Hi {{user.first_name}},
+{% trans 'Hi' %} {{user.first_name}},
 
-YOUR ORDER HAS BEEN RECIEVED
+{% trans 'YOUR ORDER HAS BEEN RECIEVED' %}
 
-Order Number: {{order.order_number}}
+{% trans 'Order Number' %}: {{order.order_number}}
 
 {% endautoescape %}
