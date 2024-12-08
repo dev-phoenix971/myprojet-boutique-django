@@ -22,7 +22,9 @@ from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path("admin/", include('admin_honeypot.urls', namespace='admin_honeypot')),
+    path("securelogin/", admin.site.urls),
+    path('cookies/', include('cookie_consent.urls')),
     
 ]
 
@@ -31,6 +33,7 @@ urlpatterns += i18n_patterns(
     path('store/', include('store.urls')),
     path('cart/', include('carts.urls')),
     path('accounts/', include('accounts.urls')),
+    path('informations/', include('informations.urls')),
 
     # ORDERS
     path('orders/', include('orders.urls')),

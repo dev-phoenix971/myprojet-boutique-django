@@ -2,7 +2,7 @@ from pathlib import Path
 from decouple import config # type: ignore
 import os
 from django.utils.translation import gettext_lazy as _
-
+from django_recaptcha.fields import ReCaptchaField
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -15,10 +15,10 @@ LOCALE_PATHS = (
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-af1&o_!nt2n6#j^7w-lw#5b7+9t17f&s6f3@2ovct*62k4g&ji"
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=True, cast=bool) #True
 
 ALLOWED_HOSTS = []
 
@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     "store",
     "carts",
     "orders",
+    "cookie_consent",
+    "informations",
+    "django_recaptcha",
+    "admin_honeypot",
 ]
 
 MIDDLEWARE = [
@@ -56,6 +60,8 @@ SESSION_EXPIRE_SECONDS = 3600  # 1 hour
 SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
 SESSION_TIMEOUT_REDIRECT = 'accounts/login'
 
+COOKIE_CONSENT_NAME = "cookie_consent"
+COOKIE_CONSENT_ENABLED = lambda r: DEBUG or (r.user.is_authenticated() and r.user.is_staff)
 
 ROOT_URLCONF = "myboutique.urls"
 
@@ -160,6 +166,13 @@ MESSAGE_TAGS = {
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_PORT = config('EMAIL_PORT', cast=int)
-EMAIL_USE_TLS = True
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+
+
+RECAPTCHA_PUBLIC_KEY = config('CAPTCHA_PUBLIC')
+RECAPTCHA_PRIVATE_KEY = config('CAPTCHA_PRIVATE')
+
+RECAPTCHA_DOMAIN = 'www.recaptcha.net'

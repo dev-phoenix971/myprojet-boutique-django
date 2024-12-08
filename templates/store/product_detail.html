@@ -122,23 +122,23 @@
 						{% trans 'Review' %}:
 						<textarea name="review" rows="4" class="form-control"></textarea>
 						<br>
-						<!-- {% if user.is_authenticated %}
+						{% if user.is_authenticated %}
 							{% if orderproduct %}
 								<input type="submit" value="Submit Review" class="btn btn-primary">
 							{% else %}
-								<p>You must purchase this product to post a review.</p>
+								<p>{% trans 'You must purchase this product to post a review.' %}</p>
 							{% endif %}
 						{% else %}
-						<p>You must be logged in to post a review. <span><a href="{% url 'login' %}">Login now</a></span></p>
-						{% endif %} -->
+						<p>{% trans 'You must be logged in to post a review.' %}<span><a href="{% url 'login' %}">{% trans 'Login now' %}</a></span></p>
+						{% endif %}
 
-						{% if user.is_authenticated %}
+						{% comment %} {% if user.is_authenticated %}
 								<input type="submit" value="Submit Review" class="btn btn-primary">
 						{% else %}
 						<p>{% trans 'You must be logged in to post a review.' %} <span><a href="{% url 'login' %}">{% trans 'Login now' %}</a></span></p>
 						{% endif %}
 						<div class="alert alert-danger" role="alert" style="margin-top:10px;">
-							{% trans '2-Factor Review Submission is disabled for demo purpose.' %}
+							{% trans '2-Factor Review Submission is disabled for demo purpose.' %} {% endcomment %}
 </div>
 
 					</div>
@@ -163,7 +163,7 @@
 {% for review in reviews %}
 				<article class="box mb-3">
 					<div class="icontext w-100">
-
+						<img src="{% static '/images/avatars/avatar1.jpg' %}" class="img-xs icon rounded-circle">
 						<div class="text">
 							<span class="date text-muted float-md-right">{{review.updated_at}} </span>
 							<h6 class="mb-1">{{review.user.full_name}} </h6>

@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}{% translate "Contact us" %}{% endblock %}
+{% block css_block %}
+<style>
+
+label{
+  display: block;
+}
+
+input, textarea {
+  display: block;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+</style>
+{% endblock %}   
+{% block content %}
+
+<section class="section-pagetop bg">
+  <div class="container">
+      <h2 class="title-page">{% trans 'Contact Us' %}</h2>
+  
+  </div> <!-- container //  -->
+</section>
+
+<section class="section-content padding-y">
+  <div class="container">
+    <div class="card mx-auto">
+
+        <header class="mb-4"><h4 class="card-title">{% trans 'Send me a Message' %}</h4></header>
+        <p class="mb-4">
+          Send me a message about anything, let it be about cooking or a get away for a cup of coffee.
+        </p>
+        
+        <form method="post">
+       
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="g-recaptcha" data-sitekey="6LfUmnMqAAAAAEvLS3_0-zLEi9ogUcsn3paLl3fv" data-action="CONTACT"></div>
+          <button type="submit" class="btn-custom primary" name="button">Submit</button>
+        </form>
+    </div>
+  </div>
+</section>
+{% endblock %}

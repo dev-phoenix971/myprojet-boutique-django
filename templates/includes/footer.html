@@ -1,6 +1,6 @@
 {% load static %}
 {% load i18n %}
-
+{% load cookie_consent_tags %}
 
 <footer class="ct-footer footer-dark">
     <div class="container">
@@ -8,7 +8,7 @@
         <div class="col-lg-4 col-md-4 col-sm-12 footer-widget">
 			<h5 class="widget-title">{% trans 'Contact us' %}</h5>
 			<ul>
-			  <li> <a href="#">{% trans 'Customer Service Contact' %}</a> </li>
+			  <li> <a href="{% url 'contact' %}">{% trans 'Customer Service Contact' %}</a> </li>
 			  <li> <a href="#">{% trans 'My customer area' %}</a> </li>
 			  <li> <a href="#">{% trans 'My orders' %}</a> </li>
 			</ul>
@@ -17,18 +17,18 @@
         <div class="col-lg-4 col-md-4 col-sm-12 footer-widget">
           <h5 class="widget-title">{% trans 'Delivery and Payment' %}</h5>
           <ul>
-            <li> <a href="#">{% trans 'Delivery method and costs' %}</a> </li>
-            <li> <a href="#">{% trans 'Payment method' %}</a> </li>
-            <li> <a href="#">{% trans 'Secure payment' %}</a> </li>
+            <li> <a href="{% url 'modelivraison' %}">{% trans 'Delivery method and costs' %}</a> </li>
+            <li> <a href="{% url 'modepaiement' %}">{% trans 'Payment method' %}</a> </li>
+            <li> <a href="{% url 'paiementsecurise' %}">{% trans 'Secure payment' %}</a> </li>
           </ul>
         </div>
         <div class="col-lg-4 col-md-3 col-sm-6 footer-widget">
           <h5 class="widget-title">{% trans 'Legal' %}</h5>
           <ul>
-            <li> <a href="#">{% trans 'Privacy Policy' %}</a> </li>
-            <li> <a href="#">{% trans 'Refund Policy' %}</a> </li>
-            <li> <a href="#">{% trans 'Cookie Policy' %}</a> </li>
-            <li> <a href="#">{% trans 'Terms & Conditions' %}</a> </li>
+            <li> <a href="{% url 'politiqueconfidentialite' %}">{% trans 'Privacy Policy' %}</a> </li>
+            <li> <a href="{% url 'politiqueremboursement' %}">{% trans 'Refund Policy' %}</a> </li>
+            <li> <a href="{% url 'politiquekookies' %}">{% trans 'Cookie Policy' %}</a> </li>
+            <li> <a href="{% url 'conditiongenerale' %}">{% trans 'Terms & Conditions' %}</a> </li>
           </ul>
 
         </div>
@@ -50,6 +50,55 @@
 		})
 	})
 </script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" ></script>
 
+<script type="text/javascript" src={% static "cookie_consent/cookiebar.js" %}></script>
+
+
+{% if request|cookie_consent_enabled %}
+
+  {% not_accepted_or_declined_cookie_groups request as cookie_groups %}
+
+{% if cookie_groups %}
+
+  {% url "cookie_consent_cookie_group_list" as url_cookies %}
+
+  {% cookie_consent_accept_url cookie_groups as url_accept %}
+
+  {% cookie_consent_decline_url cookie_groups as url_decline %}
+
+  <script type="text/javascript">
+    var cookie_groups = [];
+    {% for cookie_group in cookie_groups %}
+      cookie_groups.push("{{ cookie_group.varname }}");
+    {% endfor %}
+
+    function ready(fn) {
+        if (document.readyState != 'loading') {
+          fn();
+        } else if (document.addEventListener) {
+          document.addEventListener('DOMContentLoaded', fn);
+        } else {
+          document.attachEvent('onreadystatechange', function() {
+            if (document.readyState != 'loading')
+              fn();
+          });
+        }
+    }
+
+    ready(function() {
+      window.legacyShowCookieBar({
+      content: "{% filter escapejs %}{% with cookie_groups=cookie_groups|join:", " %}<div class="cookie-bar">This site uses {{ cookie_groups }} cookies for better performance and user experience. Do you agree to use cookies? <a href="{{ url_accept }}" class="cc-cookie-accept">Accept</a> <a href="{{ url_decline }}" class="cc-cookie-decline">Decline</a> <a href="{{ url_cookies }}">Cookies info</a></div>{% endwith %}{% endfilter %}",
+      cookie_groups: cookie_groups,
+      cookie_decline: "{% get_decline_cookie_groups_cookie_string request cookie_groups %}",
+      beforeDeclined: function() {
+        document.cookie = "{% get_decline_cookie_groups_cookie_string request cookie_groups %}";
+      }
+    });
+  });
+</script>
+{% endif %}
+
+{% endif %}
 </body>
 </html>
